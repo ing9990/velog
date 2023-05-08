@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.velogresttemplate.adapter.io.response.TranslateResponse;
 import com.velogresttemplate.port.TranslatorPort;
 
 @RestController
@@ -20,12 +21,13 @@ public class TranslatorApi {
 	}
 
 	@GetMapping("/translate")
-	public ResponseEntity<?> translate(
+	public ResponseEntity<TranslateResponse> translate(
 		@RequestParam(name = "text") String text,
 		@RequestParam(name = "source", required = false, defaultValue = "ko") String source,
 		@RequestParam(name = "target", required = false, defaultValue = "en") String target
 	) {
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(translatorPort.translate(source, target, text));
+		TranslateResponse response = TranslateResponse.of(translatorPort.translate(source, target, text));
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }
